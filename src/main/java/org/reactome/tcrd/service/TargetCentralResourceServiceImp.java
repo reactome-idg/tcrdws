@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.reactome.tcrd.dao.TargetCentralResourceDAO;
 import org.reactome.tcrd.model.ChEMBLActivity;
+import org.reactome.tcrd.model.DrugActivity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,42 @@ public class TargetCentralResourceServiceImp implements TargetCentralResourceSer
     }
 
     @Override
-    public List<ChEMBLActivity> queryChEBMLActitiesForId(String uniprotId) {
+    public List<ChEMBLActivity> queryChEMBLActivitiesForId(String uniprotId) {
         return tcrdDAO.queryChEBMLActitiesForId(uniprotId);
     }
 
     @Override
-    public List<ChEMBLActivity> queryChEMBLActivitesForIds(Collection<String> uniprotIds) {
+    public List<ChEMBLActivity> queryChEMBLActivitiesForIds(Collection<String> uniprotIds) {
         return tcrdDAO.queryChEMBLActivitesForIds(uniprotIds);
     }
 
+    @Override
+    public List<ChEMBLActivity> queryChEMBLActivitiesForGene(String gene) {
+        return tcrdDAO.queryChEMBLActivitiesForGene(gene);
+    }
+
+    @Override
+    public List<ChEMBLActivity> queryChEMBLActivitiesForGenes(Collection<String> genes) {
+        return tcrdDAO.queryChEMBLActivitiesForGenes(genes);
+    }
+
+    @Override
+    public List<DrugActivity> queryDrugActivitiesForId(String uniprot) {
+        return tcrdDAO.queryDrugActivitiesForId(uniprot);
+    }
+
+    @Override
+    public List<DrugActivity> queryDrugActivitiesForIds(Collection<String> uniprotIds) {
+        return tcrdDAO.queryDrugActivitiesForIds(uniprotIds);
+    }
+
+    @Override
+    public List<DrugActivity> queryDrugActivitiesForGene(String gene) {
+        return tcrdDAO.queryDrugActivitiesForGene(gene);
+    }
+
+    @Override
+    public List<DrugActivity> queryDrugActivitiesForGenes(Collection<String> genes) {
+        return tcrdDAO.queryDrugActivitiesForGenes(genes);
+    }
 }

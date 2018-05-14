@@ -14,6 +14,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.junit.Test;
+import org.reactome.tcrd.model.Activity;
+import org.reactome.tcrd.model.ChEMBLActivity;
+import org.reactome.tcrd.model.DrugActivity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,19 +29,48 @@ public class WSTests {
 
     @Test
     public void testQueryChEMLActivities() throws Exception {
-        // Check GET
-        String url = HOST_URL + "chembl/uniprot/";
+        testQueryActivities(ChEMBLActivity.class);
+    }
+    
+    @Test
+    public void testQueryDrugActivities() throws Exception {
+        testQueryActivities(DrugActivity.class);
+    }
+    
+    private <T extends Activity> void testQueryActivities(Class<T> cls) throws Exception {
+        String type = null;
+        if (cls == ChEMBLActivity.class)
+            type = "chembl";
+        else if (cls == DrugActivity.class)
+            type = "drug";
+        if (type == null)
+            throw new IllegalArgumentException(cls + " is not supported!");
+        // Check GET for one UniProt id
+        String url = HOST_URL + type + "/uniprot/";
         // EGFR
         String uniprotId = "P00533";
         System.out.println(url + uniprotId);
         String rtn = callHttp(url + uniprotId, HTTP_GET, "");
         outputJSON(rtn);
         
-        // CHECK POST
+        // CHECK POST for more than one UniProt ids
         String ids = "P00533,P10721"; // EGFR and KIT
-        url = HOST_URL + "chembl/uniprots";
+        url = HOST_URL + type + "/uniprots";
         rtn = callHttp(url, HTTP_POST, ids);
         System.out.println("\n" + url);
+        outputJSON(rtn);
+        
+        // Check GET for one gene
+        url = HOST_URL + type + "/gene/EGFR";
+        System.out.println("\n" + url);
+        rtn = callHttp(url, HTTP_GET, "");
+        outputJSON(rtn);
+        
+        // Gene POST for more than one gene
+        url = HOST_URL + type + "/genes";
+        String genes = "EGFR,KIT,PPP2R2A";
+        System.out.println(url);
+        rtn = callHttp(url, HTTP_POST, genes);
         outputJSON(rtn);
     }
     
