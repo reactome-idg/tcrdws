@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-5.0.dtd">
+
+<hibernate-configuration>
+<session-factory>
+<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tcrd_v_4_6_9</property>
+<property name="hibernate.connection.username">root</property>
+<property name="hibernate.connection.password">macmysql01</property>
+<property name="hibernate.connection.pool_size">4</property>
+<property name="show_sql">false</property>
+<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+<property name="hibernate.current_session_context_class">thread</property>
+
+<mapping class="org.reactome.tcrd.model.Protein" />
+<mapping class="org.reactome.tcrd.model.Target" />
+<mapping class="org.reactome.tcrd.model.ChEMBLActivity" />
+<mapping class="org.reactome.tcrd.model.DrugActivity" />
+
+</session-factory>
+</hibernate-configuration>
