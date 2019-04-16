@@ -27,6 +27,14 @@ public class Activity {
         
     }
 
+    public String getCompoundChEMBLId() {
+        return compoundChEMBLId;
+    }
+
+    public void setCompoundChEMBLId(String compoundChEMBLId) {
+        this.compoundChEMBLId = compoundChEMBLId;
+    }
+
     public Long getId() {
         return id;
     }

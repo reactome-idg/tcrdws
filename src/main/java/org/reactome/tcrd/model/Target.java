@@ -27,7 +27,11 @@ public class Target {
     private String description;
     private String comment;
     @Column(name = "tdl")
+    // enum('Tclin+','Tclin','Tchem+','Tchem','Tbio','Tgray','Tdark') 
     private String targetDevLevel;
+    @Column(name = "fam")
+    // enum('Enzyme','Epigenetic','GPCR','IC','Kinase','NR','oGPCR','TF','TF; Epigenetic','Transporter')
+    private String family;
     // The following annotation is based on hibernate doc:
     // https://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-mapping-association
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -39,16 +43,24 @@ public class Target {
     private Set<ChEMBLActivity> chemblActivities;
     @OneToMany(mappedBy = "target")
     private Set<DrugActivity> drugActivities;
+
+    public Target() {
+    }
     
+    public String getFamily() {
+        return family;
+    }
+
+    public void setFamily(String family) {
+        this.family = family;
+    }
+
     public Set<DrugActivity> getDrugActivities() {
         return drugActivities;
     }
 
     public void setDrugActivities(Set<DrugActivity> drugActivities) {
         this.drugActivities = drugActivities;
-    }
-
-    public Target() {
     }
 
     public Set<ChEMBLActivity> getChemblActivities() {
