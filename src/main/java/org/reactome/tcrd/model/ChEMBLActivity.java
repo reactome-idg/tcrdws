@@ -5,12 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "chembl_activity")
+@Table(name = "cmpd_activity")
 public class ChEMBLActivity extends Activity {
-    @Column(name = "cmpd_name_in_ref")
+    @Column(name = "cmpd_name_in_src")
     private String compoundChEMBLNameInRef;
-    @Column(name = "pubmed_id")
-    private Long pubmedId;
+    @Column(name = "pubmed_ids")
+    private String pubmedIds;
     
     public ChEMBLActivity() {
         
@@ -32,12 +32,12 @@ public class ChEMBLActivity extends Activity {
         this.compoundChEMBLNameInRef = compoundChEMBLNameInRef;
     }
 
-    public Long getPubmedId() {
-        return pubmedId;
+    public String getPubmedIds() {
+        return pubmedIds;
     }
 
-    public void setPubmedId(Long pubmedId) {
-        this.pubmedId = pubmedId;
+    public void setPubmedIds(String pubmedIds) {
+        this.pubmedIds = pubmedIds;
     }
 
 }

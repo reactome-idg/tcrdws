@@ -19,17 +19,51 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.Test;
+import org.reactome.idg.harmonizome.DataDownloader;
 import org.reactome.r3.util.FileUtility;
 import org.reactome.r3.util.InteractionUtilities;
 import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.GeneAttributeType;
 import org.reactome.tcrd.model.Protein;
 import org.reactome.tcrd.model.Target;
 
 public class HibernateTests {
     
     public HibernateTests() {
+    }
+    
+    @Test
+    public void checkGeneAttributeType() throws Exception {
+        SessionFactory sessionFactory = createSessionFactory();
+        Session session = sessionFactory.openSession();
+        TypedQuery<GeneAttributeType> query = session.createQuery("FROM " + GeneAttributeType.class.getName(),
+                                                                  GeneAttributeType.class);
+        List<GeneAttributeType> types = query.getResultList();
+        
+//      types.forEach(type -> {
+//      System.out.printf("%s\t%s\t%s\t%s\n",
+//                        type.getName(),
+//                        type.getAssociation(),
+//                        type.getDescription(),
+//                        type.getUrl());
+//  });
+  
+        System.out.println("\nTotal gene attribute types: " + types.size());
+        System.out.println("Types not covered by harmonizome:");
+        DataDownloader hmDataHelper = new DataDownloader();
+        List<String> hmDataSources = hmDataHelper.loadReactomeIDGDatasets(false);
+        System.out.println("Loaded hmDataSources: " + hmDataSources.size());
+        int count = 0;
+        for (GeneAttributeType gType : types) {
+            if (hmDataSources.contains(gType.getName()))
+                continue;
+            System.out.println(gType.getName() + ": " + gType.getUrl());
+            count ++;
+        }
+        System.out.println("Total types not in harmonizome: " + count);
+        session.close();
     }
     
     @Test

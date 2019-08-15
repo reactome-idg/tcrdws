@@ -14,6 +14,12 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.reactome.idg</groupId>
+			<artifactId>data-importer</artifactId>
+			<!-- Pickup whatever is there -->
+			<version>0.1.0-SNAPSHOT</version> 
+		</dependency>
 		<!-- Used for test -->
 		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
 		<dependency>

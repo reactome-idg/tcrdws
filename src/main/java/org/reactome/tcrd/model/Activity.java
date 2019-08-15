@@ -20,7 +20,7 @@ public class Activity {
     @Column(name = "act_type")
     private String activityType;
     private String reference;
-    @Column(name = "cmpd_chemblid")
+    @Column(name = "cmpd_pubchem_cid")
     protected String compoundChEMBLId;
     
     public Activity() {
