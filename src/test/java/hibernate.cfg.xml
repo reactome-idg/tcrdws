@@ -6,7 +6,7 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- This is handled automatically by hibernate. There is no need to defined it any more. -->
-<!-- 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Drive</property> -->
+<!-- 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property> -->
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/tcrd_v5_4_4</property>
 		<property name="hibernate.connection.username">{}</property>
 		<property name="hibernate.connection.password">{}</property>
@@ -22,5 +22,8 @@
 		<mapping class="org.reactome.tcrd.model.ChEMBLActivity" />
 		<mapping class="org.reactome.tcrd.model.DrugActivity" />
 		<mapping class="org.reactome.tcrd.model.GeneAttributeType" />
+		<mapping class="org.reactome.tcrd.model.ExpressionType" />
+		<mapping class="org.reactome.tcrd.model.Expression" />
+		
 	</session-factory>
 </hibernate-configuration>

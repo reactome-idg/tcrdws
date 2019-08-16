@@ -2,6 +2,8 @@ package org.reactome.tcrd.test;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +27,8 @@ import org.reactome.r3.util.InteractionUtilities;
 import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Expression;
+import org.reactome.tcrd.model.ExpressionType;
 import org.reactome.tcrd.model.GeneAttributeType;
 import org.reactome.tcrd.model.Protein;
 import org.reactome.tcrd.model.Target;
@@ -35,6 +39,58 @@ public class HibernateTests {
     }
     
     @Test
+    public void checkJensenTissues() throws Exception {
+        String dir = "/Users/wug/datasets/TISSUES";
+        String file = "human_tissue_experiments_full.tsv";
+        Set<String> dataTypes = new HashSet<>();
+        Files.lines(Paths.get(dir, file))
+             .forEach(line -> {
+                 String[] tokens = line.split("\t");
+                 dataTypes.add(tokens[4]);
+             });
+        System.out.println("Total data types: " + dataTypes.size());
+        dataTypes.stream().sorted().forEach(System.out::println);
+    }
+    
+    @Test
+    public void checkGenExpression() throws Exception {
+        Session session = createSessionFactory().openSession();
+        
+        // Get all expression types
+        TypedQuery<ExpressionType> query = session.createQuery("FROM " + ExpressionType.class.getName(),
+                                                               ExpressionType.class);
+        List<ExpressionType> types = query.getResultList();
+        types.forEach(eType -> {
+            System.out.printf("%s\t%s\t%s\n",
+                              eType.getName(),
+                              eType.getDataType(),
+                              eType.getDescription());
+        });
+        // Get the protein with id = 1
+        Protein protein = session.load(Protein.class, 1L);
+        System.out.println("Protein with id = 1: " + protein.getName() + ", " + protein.getSym());
+        // Get expression values for this protein
+        TypedQuery<Expression> expressionQuery = session.createQuery("FROM Expression e WHERE e.protein = :protein",
+                                                                     Expression.class);
+        expressionQuery.setParameter("protein", protein);
+        List<Expression> expressions = expressionQuery.getResultList();
+        System.out.println("Total expressions for this protein: " + expressions.size());
+        expressions.forEach(exp -> {
+            System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+                              exp.getEtype().getName(),
+                              exp.getTissue(),
+                              exp.getQualValue(),
+                              exp.getNumberValue(),
+                              exp.getStringValue(),
+                              exp.getEvidence(),
+                              exp.getZscore(),
+                              exp.getConfidence());
+        });
+        
+        session.close();
+    }
+    
+    @Test
     public void checkGeneAttributeType() throws Exception {
         SessionFactory sessionFactory = createSessionFactory();
         Session session = sessionFactory.openSession();
@@ -42,13 +98,17 @@ public class HibernateTests {
                                                                   GeneAttributeType.class);
         List<GeneAttributeType> types = query.getResultList();
         
-//      types.forEach(type -> {
-//      System.out.printf("%s\t%s\t%s\t%s\n",
-//                        type.getName(),
-//                        type.getAssociation(),
-//                        type.getDescription(),
-//                        type.getUrl());
-//  });
+        types.forEach(type -> {
+            System.out.printf("%s\t%s\t%s\t%s\n",
+                              type.getName(),
+                              type.getAssociation(),
+                              type.getDescription(),
+                              type.getUrl());
+        });
+        if (true) { 
+            session.close();
+            return;
+        }
   
         System.out.println("\nTotal gene attribute types: " + types.size());
         System.out.println("Types not covered by harmonizome:");
@@ -57,12 +117,14 @@ public class HibernateTests {
         System.out.println("Loaded hmDataSources: " + hmDataSources.size());
         int count = 0;
         for (GeneAttributeType gType : types) {
-            if (hmDataSources.contains(gType.getName()))
+            if (hmDataSources.remove(gType.getName())) {
                 continue;
+            }
             System.out.println(gType.getName() + ": " + gType.getUrl());
             count ++;
         }
         System.out.println("Total types not in harmonizome: " + count);
+        System.out.println("Harmonizome is not imported: " + hmDataSources);
         session.close();
     }
     
