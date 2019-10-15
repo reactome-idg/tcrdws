@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.ProteinTargetDevLevel;
 
 public interface TargetCentralResourceService {
     
@@ -28,4 +29,6 @@ public interface TargetCentralResourceService {
     public List<DrugActivity> queryDrugActivitiesForGene(String gene);
     
     public List<DrugActivity> queryDrugActivitiesForGenes(Collection<String> genes);
+    
+    public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt);
 }

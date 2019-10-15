@@ -21,7 +21,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.Test;
-import org.reactome.idg.harmonizome.DataDownloader;
+//import org.reactome.idg.harmonizome.DataDownloader;
 import org.reactome.r3.util.FileUtility;
 import org.reactome.r3.util.InteractionUtilities;
 import org.reactome.tcrd.model.Activity;
@@ -112,19 +112,19 @@ public class HibernateTests {
   
         System.out.println("\nTotal gene attribute types: " + types.size());
         System.out.println("Types not covered by harmonizome:");
-        DataDownloader hmDataHelper = new DataDownloader();
-        List<String> hmDataSources = hmDataHelper.loadReactomeIDGDatasets(false);
-        System.out.println("Loaded hmDataSources: " + hmDataSources.size());
-        int count = 0;
-        for (GeneAttributeType gType : types) {
-            if (hmDataSources.remove(gType.getName())) {
-                continue;
-            }
-            System.out.println(gType.getName() + ": " + gType.getUrl());
-            count ++;
-        }
-        System.out.println("Total types not in harmonizome: " + count);
-        System.out.println("Harmonizome is not imported: " + hmDataSources);
+////        DataDownloader hmDataHelper = new DataDownloader();
+//        List<String> hmDataSources = hmDataHelper.loadReactomeIDGDatasets(false);
+//        System.out.println("Loaded hmDataSources: " + hmDataSources.size());
+//        int count = 0;
+//        for (GeneAttributeType gType : types) {
+//            if (hmDataSources.remove(gType.getName())) {
+//                continue;
+//            }
+//            System.out.println(gType.getName() + ": " + gType.getUrl());
+//            count ++;
+//        }
+//        System.out.println("Total types not in harmonizome: " + count);
+//        System.out.println("Harmonizome is not imported: " + hmDataSources);
         session.close();
     }
     
@@ -221,6 +221,66 @@ public class HibernateTests {
                 otherIds.add(protein.substring(taxonId.length() + 1)); // 1 for ":".
             }
         }
+    }
+    
+    @Test
+    public void dumpAllProteins() throws Exception {
+        SessionFactory sessionFactory = createSessionFactory();
+        Session session = sessionFactory.openSession();
+        
+        TypedQuery<Protein> query = session.createQuery("FROM " + Protein.class.getSimpleName(), Protein.class);
+        List<Protein> proteins = query.getResultList();
+        System.out.println("Total proteins: " + proteins.size());
+        
+        System.out.println("UniProt\tName\tType");
+        proteins.forEach(p -> {
+            System.out.println(p.getUniprot() + "\t" + 
+                               p.getSym() + "\t" + 
+                               p.getTarget().getTargetDevLevel());
+        });
+        
+        if (true) {
+            session.close();
+            sessionFactory.close();
+        }
+        
+        Set<String> proteinNames = proteins.stream().filter(p -> p.getSym() != null).map(p -> p.getSym()).collect(Collectors.toSet());
+        System.out.println("Total gene names: " + proteinNames.size());
+        
+        // Dark proteins
+        Set<String> darkProteins = proteins.stream()
+                .filter(p -> p.getTarget().getTargetDevLevel().equals("Tdark"))
+                .filter(p -> p.getSym() != null)
+                .map(p -> p.getSym())
+                .collect(Collectors.toSet());
+        System.out.println("Total dark proteins: " + darkProteins.size());
+        
+        String matchedGenesFileName = "/Users/wug/datasets/archs4/reactome_matched_genes.txt";
+        Set<String> matchedGenes = Files.lines(Paths.get(matchedGenesFileName)).collect(Collectors.toSet());
+        System.out.println("Total matched genes: " + matchedGenes.size());
+        matchedGenes.retainAll(darkProteins);
+        System.out.println("\tDark matched genes: " + matchedGenes.size());
+        
+        session.close();
+        sessionFactory.close();
+        
+//        // Check with the Reactome database
+//        String fileName = "../../CuratorTool/HumanGenesInReactome_091119.txt";
+//        Set<String> reactomeGenes = Files.lines(Paths.get(fileName)).collect(Collectors.toSet());
+//        System.out.println("Total reactome genes: " + reactomeGenes.size());
+//        
+//        // Shared
+//        Set<String> shared = new HashSet<>(reactomeGenes);
+//        shared.retainAll(proteinNames);
+//        System.out.println("Shared: " + shared.size());
+//        
+//        proteinNames.removeAll(shared);
+//        System.out.println("Not shared in TCRD: " + proteinNames.size());
+//        proteinNames.forEach(System.out::println);
+//        
+//        reactomeGenes.removeAll(shared);
+//        System.out.println("Not sured in Reactome: " + reactomeGenes.size());
+//        reactomeGenes.forEach(System.out::println);
     }
     
     @Test

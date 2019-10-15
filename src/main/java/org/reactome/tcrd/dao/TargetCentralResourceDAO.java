@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.ProteinTargetDevLevel;
 
 public interface TargetCentralResourceDAO {
     
@@ -16,7 +17,7 @@ public interface TargetCentralResourceDAO {
     public List<ChEMBLActivity> queryChEBMLActitiesForId(String uniprot);
     
     public List<ChEMBLActivity> queryChEMBLActivitesForIds(Collection<String> uniprotIds);
-    
+//    
     public List<ChEMBLActivity> queryChEMBLActivitiesForGene(String gene);
     
     public List<ChEMBLActivity> queryChEMBLActivitiesForGenes(Collection<String> genes);
@@ -28,4 +29,6 @@ public interface TargetCentralResourceDAO {
     public List<DrugActivity> queryDrugActivitiesForGene(String gene);
     
     public List<DrugActivity> queryDrugActivitiesForGenes(Collection<String> genes);
+    
+    public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt);
 }

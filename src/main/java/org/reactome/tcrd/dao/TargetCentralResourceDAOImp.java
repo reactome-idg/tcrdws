@@ -8,6 +8,8 @@ import org.hibernate.SessionFactory;
 import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Protein;
+import org.reactome.tcrd.model.ProteinTargetDevLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -90,6 +92,23 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
                 .setParameter("uniprot", uniprotIds)
                 .getResultList();
         return activities;
+    }
+    
+    @Override
+    public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a WHERE a.uniprot = :uniprot", Protein.class)
+                                       .setParameter("uniprot", uniProt)
+                                       .getResultList();
+        if (proteins == null || proteins.size() == 0)
+            return null;
+        // Just use the first protein
+        ProteinTargetDevLevel rtn = new ProteinTargetDevLevel();
+        Protein protein = proteins.get(0);
+        rtn.setUniprot(protein.getUniprot());
+        rtn.setSym(protein.getSym());
+        rtn.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
+        return rtn;
     }
 
 }

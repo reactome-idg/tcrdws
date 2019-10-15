@@ -37,6 +37,14 @@ public class WSTests {
         testQueryActivities(DrugActivity.class);
     }
     
+    @Test
+    public void testQueryProteinTargetLevel() throws Exception {
+        String uniProtId = "P00533";
+        String url = HOST_URL + "targetlevel/uniprot/" + uniProtId;
+        String rtn = callHttp(url, HTTP_GET, null);
+        outputJSON(rtn);
+    }
+    
     private <T extends Activity> void testQueryActivities(Class<T> cls) throws Exception {
         String type = null;
         if (cls == ChEMBLActivity.class)

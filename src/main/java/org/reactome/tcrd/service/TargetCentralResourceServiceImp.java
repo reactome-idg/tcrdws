@@ -6,6 +6,7 @@ import java.util.List;
 import org.reactome.tcrd.dao.TargetCentralResourceDAO;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.ProteinTargetDevLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,5 +56,10 @@ public class TargetCentralResourceServiceImp implements TargetCentralResourceSer
     @Override
     public List<DrugActivity> queryDrugActivitiesForGenes(Collection<String> genes) {
         return tcrdDAO.queryDrugActivitiesForGenes(genes);
+    }
+    
+    @Override
+    public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt) {
+        return tcrdDAO.queryProteinTargetLevel(uniProt);
     }
 }

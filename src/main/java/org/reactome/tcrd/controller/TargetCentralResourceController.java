@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.ProteinTargetDevLevel;
 import org.reactome.tcrd.service.TargetCentralResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,12 @@ public class TargetCentralResourceController {
     private TargetCentralResourceService tcrdService;
     
     public TargetCentralResourceController() {
+    }
+    
+    @Transactional(readOnly = true)
+    @GetMapping("/targetlevel/uniprot/{uniprotId}")
+    public ProteinTargetDevLevel queryProteinTargetLevel(@PathVariable("uniprotId") String uniProt) {
+        return tcrdService.queryProteinTargetLevel(uniProt);
     }
     
     @Transactional(readOnly = true)
