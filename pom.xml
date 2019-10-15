@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.reactome.idg</groupId>
@@ -6,20 +7,20 @@
 	<version>v1</version>
 	<packaging>war</packaging>
 
-	<!-- The following is based on https://www.boraji.com/how-to-create-a-web-project-using-maven-in-eclipse
-	and http://www.boraji.com/spring-mvc-4-hibernate-5-restful-crud-operations-example -->
+	<!-- The following is based on https://www.boraji.com/how-to-create-a-web-project-using-maven-in-eclipse 
+		and http://www.boraji.com/spring-mvc-4-hibernate-5-restful-crud-operations-example -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 	</properties>
 
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.reactome.idg</groupId> -->
-<!-- 			<artifactId>data-importer</artifactId> -->
-			<!-- Pickup whatever is there -->
-<!-- 			<version>0.1.0-SNAPSHOT</version>  -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.reactome.idg</groupId> -->
+		<!-- <artifactId>data-importer</artifactId> -->
+		<!-- Pickup whatever is there -->
+		<!-- <version>0.1.0-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 		<!-- Used for test -->
 		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
 		<dependency>
@@ -37,16 +38,22 @@
 		</dependency>
 		<!-- Foundation classes developed in the caBigR3 project -->
 		<dependency>
-			<groupId>org.reactome</groupId>
-			<artifactId>caBIGR3-minimal</artifactId>
-			<version>3.0</version>
+			<groupId>org.reactome.fi</groupId>
+			<artifactId>foundation</artifactId>
+			<version>1.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- junit test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
-<!-- 			<scope>test</scope> -->
+			<!-- <scope>test</scope> -->
 		</dependency>
 		<!-- Spring MVC Dependency -->
 		<dependency>
@@ -82,10 +89,12 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<!-- Need to use version 6 mysql driver. Otherwise, the driver cannot be found. -->
-			<!-- Have to call this SET GLOBAL time_zone = '-7:00' (for PDT) to avoid the error: The server time zone value 'PDT' is unrecognized -->
-			<!-- Add the following line in /etc/my.cnf: default_time_zone = '-7:00'. So there is no need to do the above, which
-			should be done after mysql (re)starts. -->
+			<!-- Need to use version 6 mysql driver. Otherwise, the driver cannot 
+				be found. -->
+			<!-- Have to call this SET GLOBAL time_zone = '-7:00' (for PDT) to avoid 
+				the error: The server time zone value 'PDT' is unrecognized -->
+			<!-- Add the following line in /etc/my.cnf: default_time_zone = '-7:00'. 
+				So there is no need to do the above, which should be done after mysql (re)starts. -->
 			<version>6.0.6</version>
 		</dependency>
 		<!-- Jackson API for JSON -->
@@ -95,11 +104,11 @@
 			<version>2.8.7</version>
 		</dependency>
 		<!-- Apache Commons DBCP -->
-    		<dependency>
-      		<groupId>org.apache.commons</groupId>
-      		<artifactId>commons-dbcp2</artifactId>
-      		<version>2.1.1</version>
-    		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 		<!-- Servlet API -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -107,11 +116,12 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Add this for linux distribution. It works fine without using this for some unknown reason under Mac OSX -->
+		<!-- Add this for linux distribution. It works fine without using this 
+			for some unknown reason under Mac OSX -->
 		<dependency>
-    		<groupId>com.fasterxml.woodstox</groupId>
-    		<artifactId>woodstox-core</artifactId>
-    		<version>5.0.2</version>
+			<groupId>com.fasterxml.woodstox</groupId>
+			<artifactId>woodstox-core</artifactId>
+			<version>5.0.2</version>
 		</dependency>
 	</dependencies>
 
