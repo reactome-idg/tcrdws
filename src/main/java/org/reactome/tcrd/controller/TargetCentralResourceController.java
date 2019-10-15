@@ -31,10 +31,29 @@ public class TargetCentralResourceController {
     public TargetCentralResourceController() {
     }
     
+    /**
+     * This Get call should be used for one single UniProt only.
+     * @param uniProt
+     * @return
+     */
     @Transactional(readOnly = true)
     @GetMapping("/targetlevel/uniprot/{uniprotId}")
     public ProteinTargetDevLevel queryProteinTargetLevel(@PathVariable("uniprotId") String uniProt) {
         return tcrdService.queryProteinTargetLevel(uniProt);
+    }
+    
+    /**
+     * Text should contain a set of UniProt ids delimited by ",".
+     * @param text
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @PostMapping("/targetlevel/uniprots")
+    public List<ProteinTargetDevLevel> queryProteinTargetLevels(@RequestBody String text) {
+        if (text == null || text.trim().length() == 0)
+            return new ArrayList<>();
+        List<String> ids = Arrays.asList(text.split(","));
+        return tcrdService.queryProteinTargetLevels(ids);
     }
     
     @Transactional(readOnly = true)

@@ -1,6 +1,8 @@
 package org.reactome.tcrd.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -96,18 +98,29 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
     
     @Override
     public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt) {
-        Session session = sessionFactory.getCurrentSession();
-        List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a WHERE a.uniprot = :uniprot", Protein.class)
-                                       .setParameter("uniprot", uniProt)
-                                       .getResultList();
-        if (proteins == null || proteins.size() == 0)
+        List<ProteinTargetDevLevel> list = queryProteinTargetLevels(Collections.singletonList(uniProt));
+        if (list.size() == 0)
             return null;
-        // Just use the first protein
-        ProteinTargetDevLevel rtn = new ProteinTargetDevLevel();
-        Protein protein = proteins.get(0);
-        rtn.setUniprot(protein.getUniprot());
-        rtn.setSym(protein.getSym());
-        rtn.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
+        return list.get(0); // We expect one object only.
+    }
+    
+    @Override
+    public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a WHERE a.uniprot in :uniprots", Protein.class)
+                .setParameter("uniprots", uniProts)
+                .getResultList();
+        if (proteins == null || proteins.size() == 0)
+            return new ArrayList<>();
+        List<ProteinTargetDevLevel> rtn = new ArrayList<>();
+        for (Protein protein : proteins) {
+            ProteinTargetDevLevel devLevel = new ProteinTargetDevLevel();
+            // Just use the first protein
+            devLevel.setUniprot(protein.getUniprot());
+            devLevel.setSym(protein.getSym());
+            devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
+            rtn.add(devLevel);
+        }
         return rtn;
     }
 

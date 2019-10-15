@@ -39,9 +39,17 @@ public class WSTests {
     
     @Test
     public void testQueryProteinTargetLevel() throws Exception {
+        // Test Get for one single UniProt id
         String uniProtId = "P00533";
         String url = HOST_URL + "targetlevel/uniprot/" + uniProtId;
         String rtn = callHttp(url, HTTP_GET, null);
+        System.out.println("\n" + url);
+        outputJSON(rtn);
+        // Test Post for two UniProt ids, delimited by ",".
+        String ids = "P00533,P10721"; // EGFR and KIT
+        url = HOST_URL + "targetlevel/uniprots";
+        rtn = callHttp(url, HTTP_POST, ids);
+        System.out.println("\n" + url);
         outputJSON(rtn);
     }
     

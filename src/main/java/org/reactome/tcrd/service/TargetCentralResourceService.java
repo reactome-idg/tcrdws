@@ -31,4 +31,6 @@ public interface TargetCentralResourceService {
     public List<DrugActivity> queryDrugActivitiesForGenes(Collection<String> genes);
     
     public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt);
+    
+    public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts);
 }

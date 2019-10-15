@@ -62,4 +62,9 @@ public class TargetCentralResourceServiceImp implements TargetCentralResourceSer
     public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt) {
         return tcrdDAO.queryProteinTargetLevel(uniProt);
     }
+    
+    @Override
+    public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts) {
+        return tcrdDAO.queryProteinTargetLevels(uniProts);
+    }
 }
