@@ -3,9 +3,12 @@ package org.reactome.tcrd.dao;
 import java.util.Collection;
 import java.util.List;
 
+import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Expression;
 import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.TissueExpression;
 
 public interface TargetCentralResourceDAO {
     
@@ -33,4 +36,8 @@ public interface TargetCentralResourceDAO {
     public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt);
     
     public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts);
+
+	public List<TissueExpression> queryExpression(String uniProt);
+	
+	public List<TissueExpression> queryExpressions(Collection<String> uniProts);
 }

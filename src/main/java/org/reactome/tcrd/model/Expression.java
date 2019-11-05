@@ -37,7 +37,7 @@ public class Expression {
     private Double conf;
     private String oid;
     private Boolean confidence;
-    private String age;
+//    private String age;
     private String url;
     @Column(name = "uberon_id")
     private String uberonId;
@@ -158,13 +158,13 @@ public class Expression {
         this.confidence = confidence;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
+//    public String getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(String age) {
+//        this.age = age;
+//    }
 
     public String getUrl() {
         return url;

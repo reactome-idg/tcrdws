@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.reactome.tcrd.dao.TargetCentralResourceDAO;
+import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Expression;
 import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.TissueExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,4 +70,16 @@ public class TargetCentralResourceServiceImp implements TargetCentralResourceSer
     public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts) {
         return tcrdDAO.queryProteinTargetLevels(uniProts);
     }
+
+	@Override
+	public List<TissueExpression> queryExpression(String uniProt) {
+		return tcrdDAO.queryExpression(uniProt);
+	}
+
+	@Override
+	public List<TissueExpression> queryExpressions(Collection<String> ids) {
+		return tcrdDAO.queryExpressions(ids);
+	}
+	
+	
 }

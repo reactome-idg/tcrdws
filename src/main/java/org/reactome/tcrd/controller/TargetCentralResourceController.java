@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Expression;
 import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.TissueExpression;
 import org.reactome.tcrd.service.TargetCentralResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,5 +147,20 @@ public class TargetCentralResourceController {
         return activities;
     }
     
+    @Transactional(readOnly = true)
+    @GetMapping("/expression/uniprot/{uniprotId}")
+    public List<TissueExpression> queryExpression(@PathVariable("uniprotId") String uniProt){
+    	List<TissueExpression> rtn = tcrdService.queryExpression(uniProt);
+		return rtn;
+    }
+    
+    @Transactional(readOnly = true)
+    @PostMapping("/expression/uniprots")
+    public List<TissueExpression> queryExpressions(@RequestBody String text){
+    	if(text == null || text.trim().length() == 0)
+    		return new ArrayList<>();
+    	List<String> ids = Arrays.asList(text.split(","));
+    	return tcrdService.queryExpressions(ids);
+    }
     
 }

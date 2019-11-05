@@ -12,6 +12,8 @@ import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
 import org.reactome.tcrd.model.Protein;
 import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.TissueExpression;
+import org.reactome.tcrd.model.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -124,4 +126,34 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         return rtn;
     }
 
+	@Override
+	public List<TissueExpression> queryExpression(String uniProt) {
+		List<TissueExpression> rtn = queryExpressions(Collections.singletonList(uniProt));
+		if(rtn.size() == 0)
+			return null;
+		return rtn;
+	}
+
+	@Override
+	public List<TissueExpression> queryExpressions(Collection<String> uniProts) {
+		Session session = sessionFactory.getCurrentSession();
+		List<Expression> expressions = session.createQuery("SELECT a FROM " 
+				+ Expression.class.getSimpleName() 
+				+ " a WHERE a.etype.name IN ('HPM Protein','HCA RNA') AND a.protein.uniprot in :uniprot", Expression.class)
+				.setParameter("uniprot", uniProts)
+				.getResultList();
+		if(expressions == null  || expressions.size()==0)
+			return new ArrayList<>();
+		List<TissueExpression> rtn = new ArrayList<>();
+		for(Expression expression : expressions) {
+			TissueExpression tissueExp = new TissueExpression();
+			tissueExp.setSym(expression.getProtein().getSym());
+			tissueExp.setEtype(expression.getEtype().getName());
+			tissueExp.setTissue(expression.getTissue());
+			tissueExp.setUniprot(expression.getProtein().getUniprot());
+			tissueExp.setNumberVal(expression.getNumberValue());
+			rtn.add(tissueExp);
+		}
+		return rtn;
+	}
 }

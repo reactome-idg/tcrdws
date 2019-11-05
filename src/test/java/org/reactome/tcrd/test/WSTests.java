@@ -53,6 +53,22 @@ public class WSTests {
         outputJSON(rtn);
     }
     
+    @Test
+    public void testQueryExpression() throws Exception {
+    	//Test Get for single Uniprot id
+    	String uniProtId = "P00533";
+    	String url = HOST_URL + "expression/uniprot/" + uniProtId;
+    	String rtn = callHttp(url, HTTP_GET, null);
+    	System.out.println("\n" + url);
+    	outputJSON(rtn);
+    	// Test Post for multiple Uniprot ids
+    	String ids = "P00533,P10721";
+    	url = HOST_URL + "expression/uniprots";
+    	rtn = callHttp(url, HTTP_POST, ids);
+    	System.out.println("\n" + url);
+    	outputJSON(rtn);
+    }
+    
     private <T extends Activity> void testQueryActivities(Class<T> cls) throws Exception {
         String type = null;
         if (cls == ChEMBLActivity.class)
