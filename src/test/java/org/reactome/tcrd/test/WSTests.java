@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -23,10 +24,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WSTests {
     
-    protected final String HOST_URL = "http://localhost:8060/";
+    protected final String HOST_URL = "http://localhost:8060/tcrdws/";
     protected final String HTTP_POST = "Post";
     protected final String HTTP_GET = "Get";
 
+    @Test
+    public void testListExpressionTypes() throws Exception {
+        String url = HOST_URL + "expressionTypes";
+        System.out.println(url);
+        String rtn = callHttp(url, HTTP_GET, null);
+        outputJSON(rtn);
+    }
+    
+    @Test
+    public void testListTissuesForExpressionType() throws Exception {
+        String etype = "JensenLab Experiment HPA";
+        etype = URLEncoder.encode(etype, "utf-8");
+        String url = HOST_URL + etype;
+        System.out.println(url);
+        String rtn = callHttp(url, HTTP_GET, null);
+        outputJSON(rtn);
+    }
+    
     @Test
     public void testQueryChEMLActivities() throws Exception {
         testQueryActivities(ChEMBLActivity.class);
@@ -35,6 +54,17 @@ public class WSTests {
     @Test
     public void testQueryDrugActivities() throws Exception {
         testQueryActivities(DrugActivity.class);
+    }
+    
+    @Test
+    public void testQueryProteinExpressions() throws Exception {
+        String ids = "P00533,P10721"; // EGFR and KIT
+        String tissues = "Bone,Bone marrow";
+        String etypes = "JensenLab Experiment HPA,UniProt Tissue";
+        String query = ids + "\n" + tissues + "\n" + etypes;
+        String url = HOST_URL + "expressions/uniprots";
+        String rtn = callHttp(url, HTTP_POST, query);
+        System.out.println(url + "\n" + rtn);
     }
     
     @Test

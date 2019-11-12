@@ -1,27 +1,87 @@
 package org.reactome.tcrd.dao;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections15.map.HashedMap;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.reactome.tcrd.model.Activity;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
+import org.reactome.tcrd.model.Expression;
+import org.reactome.tcrd.model.ExpressionType;
 import org.reactome.tcrd.model.Protein;
-import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.rest.ProteinExpression;
+import org.reactome.tcrd.model.rest.ProteinTargetDevLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
+    private static final Logger logger = Logger.getLogger(TargetCentralResourceDAOImp.class);
     
     @Autowired
     private SessionFactory sessionFactory;
+    // Cached values
+    private Map<String, List<String>> etypeToTissues;
     
     public TargetCentralResourceDAOImp() {
+    }
+    
+    @Override
+    public List<String> getTissues(String etype) {
+        if (etypeToTissues == null) 
+            loadEtypeToTissues();
+        List<String> rtn = null;
+        if (etypeToTissues != null)
+            rtn = etypeToTissues.get(etype);
+        if (rtn == null)
+            rtn = new ArrayList<>();
+        return rtn; // Make sure we have returned something even though it is empty to avoid null exception on the server-side.
+    }
+    
+    private void loadEtypeToTissues() {
+        etypeToTissues = new HashedMap<>();
+        // Hard-coded for a pre-generated file dumped from the TCRD database
+        String fileName = "expression_type_tisses.txt"; 
+        try {
+            InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+            InputStreamReader reader = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(reader);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split("\t");
+                etypeToTissues.compute(tokens[0], (key, list) -> {
+                    if (list == null)
+                        list = new ArrayList<>();
+                    list.add(tokens[1]);
+                    return list;
+                });
+            }
+            br.close();
+            reader.close();
+            is.close();
+        }
+        catch(IOException e) {
+            logger.error("Error in loadEtypeToTissues: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public List<ExpressionType> listExpressionTypes() {
+        Session session = sessionFactory.getCurrentSession();
+        List<ExpressionType> types = session.createQuery("FROM " + ExpressionType.class.getSimpleName(), ExpressionType.class)
+                                            .getResultList();
+        return types;
     }
 
     @Override
@@ -120,6 +180,36 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
             devLevel.setSym(protein.getSym());
             devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
             rtn.add(devLevel);
+        }
+        return rtn;
+    }
+    
+    @Override
+    public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
+                                                           Collection<String> tissues,
+                                                           Collection<String> etypes) {
+        Session session = sessionFactory.getCurrentSession();
+        List<Expression> expressions = session.createQuery("SELECT e FROM " + Expression.class.getSimpleName() +
+                                                           " e WHERE e.protein.uniprot in :uniprots " + 
+                                                           " AND e.tissue in :tissues " + 
+                                                           " AND e.etype.name in :etypes",
+                                                           Expression.class)
+                                     .setParameter("uniprots", uniProts)
+                                     .setParameter("tissues", tissues)
+                                     .setParameter("etypes", etypes)
+                                     .getResultList();
+        List<ProteinExpression> rtn = new ArrayList<>();
+        for (Expression expression : expressions) {
+            ProteinExpression pe = new ProteinExpression();
+            pe.setUniprot(expression.getProtein().getUniprot());
+            pe.setSym(expression.getProtein().getSym());
+            pe.setBooleanValue(expression.getBooleanValue());
+            pe.setEtype(expression.getEtype().getName());
+            pe.setNumberValue(expression.getNumberValue());
+            pe.setNumberValue(expression.getNumberValue());
+            pe.setStringValue(expression.getStringValue());
+            pe.setTissue(expression.getTissue());
+            rtn.add(pe);
         }
         return rtn;
     }

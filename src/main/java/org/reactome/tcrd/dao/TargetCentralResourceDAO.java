@@ -5,9 +5,15 @@ import java.util.List;
 
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
-import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.ExpressionType;
+import org.reactome.tcrd.model.rest.ProteinExpression;
+import org.reactome.tcrd.model.rest.ProteinTargetDevLevel;
 
 public interface TargetCentralResourceDAO {
+    
+    public List<ExpressionType> listExpressionTypes();
+    
+    public List<String> getTissues(String etype);
     
     /**
      * Query ChEBMLActvities for a protein specified by its UniProt id.
@@ -33,4 +39,8 @@ public interface TargetCentralResourceDAO {
     public ProteinTargetDevLevel queryProteinTargetLevel(String uniProt);
     
     public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts);
+    
+    public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
+                                                           Collection<String> tissues,
+                                                           Collection<String> etypes);
 }

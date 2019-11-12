@@ -38,6 +38,8 @@ public class HibernateTests {
     public HibernateTests() {
     }
     
+    
+    
     @Test
     public void checkJensenTissues() throws Exception {
         String dir = "/Users/wug/datasets/TISSUES";

@@ -37,13 +37,15 @@ public class Expression {
     private Double conf;
     private String oid;
     private Boolean confidence;
-    private String age;
+    // This column has been removed in version 6.0.
+//    private String age;
     private String url;
+    @Column(name = "cell_id")
+    private String cellId;
     @Column(name = "uberon_id")
     private String uberonId;
     
     public Expression() {
-        
     }
 
     public Long getId() {
@@ -158,12 +160,12 @@ public class Expression {
         this.confidence = confidence;
     }
 
-    public String getAge() {
-        return age;
+    public String getCellId() {
+        return cellId;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setCellId(String cellId) {
+        this.cellId = cellId;
     }
 
     public String getUrl() {

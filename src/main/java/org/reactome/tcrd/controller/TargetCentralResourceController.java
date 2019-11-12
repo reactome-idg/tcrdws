@@ -1,12 +1,19 @@
 package org.reactome.tcrd.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
-import org.reactome.tcrd.model.ProteinTargetDevLevel;
+import org.reactome.tcrd.model.ExpressionType;
+import org.reactome.tcrd.model.rest.ProteinExpression;
+import org.reactome.tcrd.model.rest.ProteinProperty;
+import org.reactome.tcrd.model.rest.ProteinTargetDevLevel;
 import org.reactome.tcrd.service.TargetCentralResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +31,64 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TargetCentralResourceController {
-    
+    private final static Logger logger = Logger.getLogger(TargetCentralResourceController.class);
     @Autowired
     private TargetCentralResourceService tcrdService;
     
     public TargetCentralResourceController() {
+    }
+    
+    /**
+     * Query protein expression or gene expression for a set of UniProt ids,
+     * tissues, and expression data types.
+     * Note: This is a post call. Three lines delimited by "\n" are expected in the 
+     * post text in the following order:
+     * 1). UniProt ids, delimited by ",".
+     * 2). Tissues, delimited by ","
+     * 3). Expression types, delimited by ",".
+     */
+    @Transactional(readOnly = true)
+    @PostMapping("/expressions/uniprots")
+    public List<ProteinExpression> queryProteinExpressions(@RequestBody String text) {
+        if (text == null || text.trim().length() == 0)
+            return new ArrayList<>();
+        String[] lines = text.split("\n");
+        if (lines.length < 3) {
+            logger.info("Query post body text doesn't have enough lines: " + lines.length);
+            return new ArrayList<>();
+        }
+        Collection<String> uniProts = Arrays.asList(lines[0].split(","));
+        Collection<String> tissues = Arrays.asList(lines[1].split(","));
+        Collection<String> etypes = Arrays.asList(lines[2].split(","));
+        return tcrdService.queryProteinExpressions(uniProts, tissues, etypes);
+    }
+    
+    /**
+     * List expression types stored in the database.
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @GetMapping("/expressionTypes")
+    public List<ExpressionType> listExpressionTypes() {
+        return tcrdService.listExpressionTypes();
+    }
+    
+    /**
+     * List tissues for an expression type.
+     * @param etype
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @GetMapping("/{etype}")
+    public List<String> getTissues(@PathVariable("etype") String etype) {
+        try {
+            etype = URLDecoder.decode(etype, "utf-8");
+            return tcrdService.getTissues(etype);
+        }
+        catch(UnsupportedEncodingException e) {
+            logger.error("getTissues: " + e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
     
     /**
@@ -38,7 +98,7 @@ public class TargetCentralResourceController {
      */
     @Transactional(readOnly = true)
     @GetMapping("/targetlevel/uniprot/{uniprotId}")
-    public ProteinTargetDevLevel queryProteinTargetLevel(@PathVariable("uniprotId") String uniProt) {
+    public ProteinProperty queryProteinTargetLevel(@PathVariable("uniprotId") String uniProt) {
         return tcrdService.queryProteinTargetLevel(uniProt);
     }
     
