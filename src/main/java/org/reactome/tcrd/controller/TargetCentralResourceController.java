@@ -79,7 +79,7 @@ public class TargetCentralResourceController {
      * @return
      */
     @Transactional(readOnly = true)
-    @GetMapping("/{etype}")
+    @GetMapping("/tissues/{etype}")
     public List<String> getTissues(@PathVariable("etype") String etype) {
         try {
             etype = URLDecoder.decode(etype, "utf-8");

@@ -40,7 +40,7 @@ public class WSTests {
     public void testListTissuesForExpressionType() throws Exception {
         String etype = "JensenLab Experiment HPA";
         etype = URLEncoder.encode(etype, "utf-8");
-        String url = HOST_URL + etype;
+        String url = HOST_URL + "tissues/" + etype;
         System.out.println(url);
         String rtn = callHttp(url, HTTP_GET, null);
         outputJSON(rtn);
