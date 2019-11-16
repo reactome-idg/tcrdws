@@ -1,5 +1,6 @@
 package org.reactome.tcrd.main;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -19,6 +20,7 @@ import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 import org.reactome.tcrd.config.AppConfig;
 import org.reactome.tcrd.model.ExpressionType;
+import org.reactome.tcrd.model.GTEx;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -27,7 +29,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  */
 public class MainApp {
-//    private static final Logger logger = Logger.getLogger(MainApp.class.getName());
+    //    private static final Logger logger = Logger.getLogger(MainApp.class.getName());
 
     /**
      * Run this method to test the application configuration when it is run in a standalone mode.
@@ -39,7 +41,8 @@ public class MainApp {
         SessionFactory sf = context.getBean(SessionFactory.class);
         // Need to open a session without using a transaction
         Session session = sf.openSession();
-        generateExpressionTypeTissues(session);
+//        generateExpressionTypeTissues(session);
+        appendGTExTissues(session);
         session.close();
         context.close();
     }
@@ -66,9 +69,23 @@ public class MainApp {
             Collections.sort(tissues);
             for (String tissue : tissues)
                 writer.println(type.getName() + "\t" + tissue);
-//            break;
+            //            break;
         }
         writer.close();
+    }
+
+    private static void appendGTExTissues(Session session) throws Exception {
+        String fileName = "src/main/resources/expression_type_tisses.txt";
+        FileWriter fileWriter = new FileWriter(fileName, true);
+        PrintWriter writer = new PrintWriter(fileWriter);
+        // Get all expression types
+        NativeQuery<String> nativeQuery = session.createNativeQuery("SELECT DISTINCT tissue FROM gtex");
+        List<String> tissues = nativeQuery.list();
+        Collections.sort(tissues);
+        for (String tissue : tissues)
+            writer.println("GTEx\t" + tissue);
+        writer.close();
+        fileWriter.close();
     }
     
     @Test

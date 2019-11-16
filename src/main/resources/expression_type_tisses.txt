@@ -6483,3 +6483,56 @@ UniProt Tissue	Venom
 UniProt Tissue	Vulva
 UniProt Tissue	White adipose tissue
 UniProt Tissue	Xylem
+GTEx	Adipose - Subcutaneous
+GTEx	Adipose - Visceral (Omentum)
+GTEx	Adrenal Gland
+GTEx	Artery - Aorta
+GTEx	Artery - Coronary
+GTEx	Artery - Tibial
+GTEx	Bladder
+GTEx	Brain - Amygdala
+GTEx	Brain - Anterior cingulate cortex (BA24)
+GTEx	Brain - Caudate (basal ganglia)
+GTEx	Brain - Cerebellar Hemisphere
+GTEx	Brain - Cerebellum
+GTEx	Brain - Cortex
+GTEx	Brain - Frontal Cortex (BA9)
+GTEx	Brain - Hippocampus
+GTEx	Brain - Hypothalamus
+GTEx	Brain - Nucleus accumbens (basal ganglia)
+GTEx	Brain - Putamen (basal ganglia)
+GTEx	Brain - Spinal cord (cervical c-1)
+GTEx	Brain - Substantia nigra
+GTEx	Breast - Mammary Tissue
+GTEx	Cells - EBV-transformed lymphocytes
+GTEx	Cells - Transformed fibroblasts
+GTEx	Cervix - Ectocervix
+GTEx	Cervix - Endocervix
+GTEx	Colon - Sigmoid
+GTEx	Colon - Transverse
+GTEx	Esophagus - Gastroesophageal Junction
+GTEx	Esophagus - Mucosa
+GTEx	Esophagus - Muscularis
+GTEx	Fallopian Tube
+GTEx	Heart - Atrial Appendage
+GTEx	Heart - Left Ventricle
+GTEx	Kidney - Cortex
+GTEx	Liver
+GTEx	Lung
+GTEx	Minor Salivary Gland
+GTEx	Muscle - Skeletal
+GTEx	Nerve - Tibial
+GTEx	Ovary
+GTEx	Pancreas
+GTEx	Pituitary
+GTEx	Prostate
+GTEx	Skin - Not Sun Exposed (Suprapubic)
+GTEx	Skin - Sun Exposed (Lower leg)
+GTEx	Small Intestine - Terminal Ileum
+GTEx	Spleen
+GTEx	Stomach
+GTEx	Testis
+GTEx	Thyroid
+GTEx	Uterus
+GTEx	Vagina
+GTEx	Whole Blood

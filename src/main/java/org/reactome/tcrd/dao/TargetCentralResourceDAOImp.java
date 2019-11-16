@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.reactome.tcrd.model.ChEMBLActivity;
 import org.reactome.tcrd.model.DrugActivity;
 import org.reactome.tcrd.model.Expression;
 import org.reactome.tcrd.model.ExpressionType;
+import org.reactome.tcrd.model.GTEx;
 import org.reactome.tcrd.model.Protein;
 import org.reactome.tcrd.model.rest.ProteinExpression;
 import org.reactome.tcrd.model.rest.ProteinTargetDevLevel;
@@ -189,26 +191,65 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
                                                            Collection<String> tissues,
                                                            Collection<String> etypes) {
         Session session = sessionFactory.getCurrentSession();
-        List<Expression> expressions = session.createQuery("SELECT e FROM " + Expression.class.getSimpleName() +
-                                                           " e WHERE e.protein.uniprot in :uniprots " + 
-                                                           " AND e.tissue in :tissues " + 
-                                                           " AND e.etype.name in :etypes",
-                                                           Expression.class)
+        // Perform something special for GTEx
+        List<ProteinExpression> gteExpressions = null;
+        // In case etypes cannot be modified
+        List<String> etypesList = new ArrayList<>(etypes);
+        for (Iterator<String> it = etypesList.iterator(); it.hasNext();) {
+            String etype = it.next();
+            if (etype.equals("GTEx")) {
+                it.remove();
+                gteExpressions = queryGTExExpression(uniProts, tissues, session);
+                break;
+            }
+        }
+        List<ProteinExpression> rtn = new ArrayList<>();
+        if (etypesList.size() > 0) {
+            List<Expression> expressions = session.createQuery("SELECT e FROM " + Expression.class.getSimpleName() +
+                                                               " e WHERE e.protein.uniprot in :uniprots " + 
+                                                               " AND e.tissue in :tissues " + 
+                                                               " AND e.etype.name in :etypes",
+                                                               Expression.class)
+                    .setParameter("uniprots", uniProts)
+                    .setParameter("tissues", tissues)
+                    .setParameter("etypes", etypesList)
+                    .getResultList();
+            for (Expression expression : expressions) {
+                ProteinExpression pe = new ProteinExpression();
+                pe.setUniprot(expression.getProtein().getUniprot());
+                pe.setSym(expression.getProtein().getSym());
+                pe.setBooleanValue(expression.getBooleanValue());
+                pe.setEtype(expression.getEtype().getName());
+                pe.setNumberValue(expression.getNumberValue());
+                pe.setStringValue(expression.getStringValue());
+                pe.setTissue(expression.getTissue());
+                rtn.add(pe);
+            }
+        }
+        if (gteExpressions != null)
+            rtn.addAll(gteExpressions);
+        return rtn;
+    }
+    
+    private List<ProteinExpression> queryGTExExpression(Collection<String> uniProts,
+                                                        Collection<String> tissues,
+                                                        Session session) {
+        List<GTEx> expressions = session.createQuery("SELECT e FROM " + GTEx.class.getSimpleName() +
+                                                     " e WHERE e.protein.uniprot in :uniprots " + 
+                                                     " AND e.tissue in :tissues",
+                                                     GTEx.class)
                                      .setParameter("uniprots", uniProts)
                                      .setParameter("tissues", tissues)
-                                     .setParameter("etypes", etypes)
                                      .getResultList();
         List<ProteinExpression> rtn = new ArrayList<>();
-        for (Expression expression : expressions) {
+        for (GTEx expression : expressions) {
             ProteinExpression pe = new ProteinExpression();
             pe.setUniprot(expression.getProtein().getUniprot());
             pe.setSym(expression.getProtein().getSym());
-            pe.setBooleanValue(expression.getBooleanValue());
-            pe.setEtype(expression.getEtype().getName());
-            pe.setNumberValue(expression.getNumberValue());
-            pe.setNumberValue(expression.getNumberValue());
-            pe.setStringValue(expression.getStringValue());
+            pe.setEtype("GTEx");
+            pe.setNumberValue(expression.getTpm());
             pe.setTissue(expression.getTissue());
+            pe.setGender(expression.getGender());
             rtn.add(pe);
         }
         return rtn;

@@ -65,6 +65,12 @@ public class WSTests {
         String url = HOST_URL + "expressions/uniprots";
         String rtn = callHttp(url, HTTP_POST, query);
         System.out.println(url + "\n" + rtn);
+        // Special check for gtex since it uses a dedicated table
+        tissues = "Brain - Cortex,Brain - Hypothalamus";
+        etypes = "GTEx";
+        query = ids + "\n" + tissues + "\n" + etypes;
+        rtn = callHttp(url, HTTP_POST, query);
+        System.out.println("\nSpecial test for GTEx:\n" + rtn);
     }
     
     @Test

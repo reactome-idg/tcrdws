@@ -8,9 +8,19 @@ public class ProteinExpression extends ProteinProperty {
     
     private String etype;
     private String tissue;
+    private String gender;
     private String qualValue;
     private Double numberValue;
     private Boolean booleanValue;
+    
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getEtype() {
         return etype;
     }
