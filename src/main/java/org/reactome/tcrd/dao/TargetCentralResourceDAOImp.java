@@ -264,7 +264,7 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
             // Just use the first protein
             expression.setUniprot(protein.getUniprot());
             expression.setSym(protein.getSym());
-            expression.setStringValue(protein.getTarget().getTargetDevLevel());
+            expression.setQualValue(protein.getTarget().getTargetDevLevel());
             rtn.add(expression);
         }
         return rtn;

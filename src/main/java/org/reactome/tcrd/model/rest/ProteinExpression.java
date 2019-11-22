@@ -12,6 +12,10 @@ public class ProteinExpression extends ProteinProperty {
     private String qualValue;
     private Double numberValue;
     private Boolean booleanValue;
+    private String stringValue;
+    
+    public ProteinExpression() {
+    }
     
     public String getGender() {
         return gender;
@@ -68,10 +72,4 @@ public class ProteinExpression extends ProteinProperty {
     public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
     }
-
-    private String stringValue;
-    
-    public ProteinExpression() {
-    }
-
 }
