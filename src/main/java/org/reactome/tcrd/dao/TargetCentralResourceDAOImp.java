@@ -30,6 +30,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
     private static final Logger logger = Logger.getLogger(TargetCentralResourceDAOImp.class);
+    private static final String TARGET_DEV_LEVEL = "Target Development Level";
     
     @Autowired
     private SessionFactory sessionFactory;
@@ -83,6 +84,13 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         Session session = sessionFactory.getCurrentSession();
         List<ExpressionType> types = session.createQuery("FROM " + ExpressionType.class.getSimpleName(), ExpressionType.class)
                                             .getResultList();
+        // This is a hack so that target development level can be listed together with
+        // other data soruces
+        ExpressionType targetLevelType = new ExpressionType();
+        targetLevelType.setDataType("String");
+        targetLevelType.setName(TARGET_DEV_LEVEL);
+        targetLevelType.setDescription("TCRD target development level");
+        types.add(0, targetLevelType);
         return types;
     }
 
@@ -195,12 +203,16 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         List<ProteinExpression> gteExpressions = null;
         // In case etypes cannot be modified
         List<String> etypesList = new ArrayList<>(etypes);
+        List<ProteinExpression> targetDevList = null;
         for (Iterator<String> it = etypesList.iterator(); it.hasNext();) {
             String etype = it.next();
             if (etype.equals("GTEx")) {
                 it.remove();
                 gteExpressions = queryGTExExpression(uniProts, tissues, session);
-                break;
+            }
+            else if (etype.equals(TARGET_DEV_LEVEL)) {
+                it.remove();
+                targetDevList = queryProteinTargetLevels(uniProts, session);
             }
         }
         List<ProteinExpression> rtn = new ArrayList<>();
@@ -228,6 +240,33 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         }
         if (gteExpressions != null)
             rtn.addAll(gteExpressions);
+        if (targetDevList != null)
+            rtn.addAll(targetDevList);
+        return rtn;
+    }
+    
+    /**
+     * Return protein target levels as ProteinExpression objects for easy integration at the client side.
+     * @param uniProts
+     * @param session
+     * @return
+     */
+    private List<ProteinExpression> queryProteinTargetLevels(Collection<String> uniProts,
+                                                             Session session) {
+        List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a WHERE a.uniprot in :uniprots", Protein.class)
+                .setParameter("uniprots", uniProts)
+                .getResultList();
+        if (proteins == null || proteins.size() == 0)
+            return new ArrayList<>();
+        List<ProteinExpression> rtn = new ArrayList<>();
+        for (Protein protein : proteins) {
+            ProteinExpression expression = new ProteinExpression();
+            // Just use the first protein
+            expression.setUniprot(protein.getUniprot());
+            expression.setSym(protein.getSym());
+            expression.setStringValue(protein.getTarget().getTargetDevLevel());
+            rtn.add(expression);
+        }
         return rtn;
     }
     
