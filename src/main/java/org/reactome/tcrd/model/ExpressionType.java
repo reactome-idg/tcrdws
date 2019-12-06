@@ -14,8 +14,17 @@ public class ExpressionType {
     @Column(name = "data_type")
     private String dataType;
     private String description;
+    private String unit;
     
     public ExpressionType() {
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getName() {
