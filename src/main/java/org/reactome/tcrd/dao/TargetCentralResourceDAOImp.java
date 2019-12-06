@@ -91,6 +91,13 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         targetLevelType.setName(TARGET_DEV_LEVEL);
         targetLevelType.setDescription("TCRD target development level");
         types.add(0, targetLevelType);
+        // Hard-code this for 
+        for (ExpressionType etype : types) {
+            if (etype.getName().equals("JensenLab Experiment HPA")) {
+                etype.setDataType("Number");
+                break;
+            }
+        }
         return types;
     }
 
@@ -232,8 +239,12 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
                 pe.setSym(expression.getProtein().getSym());
                 pe.setBooleanValue(expression.getBooleanValue());
                 pe.setEtype(expression.getEtype().getName());
-                pe.setNumberValue(expression.getNumberValue());
-                pe.setStringValue(expression.getStringValue());
+                if (expression.getEtype().getName().equals("JensenLab Experiment HPA")) 
+                    pe.setNumberValue(expression.getConf());
+                else {
+                    pe.setNumberValue(expression.getNumberValue());
+                    pe.setStringValue(expression.getStringValue());
+                }
                 pe.setTissue(expression.getTissue());
                 rtn.add(pe);
             }
