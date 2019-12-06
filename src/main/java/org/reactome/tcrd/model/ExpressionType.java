@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "expression_type")
@@ -14,6 +15,7 @@ public class ExpressionType {
     @Column(name = "data_type")
     private String dataType;
     private String description;
+    @Transient
     private String unit;
     
     public ExpressionType() {
