@@ -244,6 +244,7 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
                 else {
                     pe.setNumberValue(expression.getNumberValue());
                     pe.setStringValue(expression.getStringValue());
+                    pe.setQualValue(expression.getQualValue());
                 }
                 pe.setTissue(expression.getTissue());
                 rtn.add(pe);

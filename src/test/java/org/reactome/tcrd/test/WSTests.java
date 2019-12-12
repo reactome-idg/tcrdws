@@ -71,6 +71,12 @@ public class WSTests {
         query = ids + "\n" + tissues + "\n" + etypes;
         rtn = callHttp(url, HTTP_POST, query);
         System.out.println("\nSpecial test for GTEx:\n" + rtn);
+        ids = "Q6PGQ7"; // BORA in https://idg.reactome.org/PathwayBrowser/#/R-HSA-453274&SEL=R-HSA-3000330&PATH=R-HSA-1640170,R-HSA-69278
+        etypes = "Consensus";
+        tissues = "Blood and immune system,Digestive Tract";
+        query = ids + "\n" + tissues + "\n" + etypes;
+        rtn = callHttp(url, HTTP_POST, query);
+        System.out.println("\nConsensus for BORA:\n" + rtn);
     }
     
     @Test
