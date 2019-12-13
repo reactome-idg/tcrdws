@@ -17,8 +17,18 @@ public class ExpressionType {
     private String description;
     @Transient
     private String unit;
+    @Transient
+    private Boolean hasGender;
     
     public ExpressionType() {
+    }
+
+    public Boolean getHasGender() {
+        return hasGender;
+    }
+
+    public void setHasGender(Boolean hasGender) {
+        this.hasGender = hasGender;
     }
 
     public String getUnit() {

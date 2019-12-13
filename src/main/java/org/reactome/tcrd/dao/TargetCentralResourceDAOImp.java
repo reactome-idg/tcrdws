@@ -95,7 +95,9 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         for (ExpressionType etype : types) {
             if (etype.getName().equals("JensenLab Experiment HPA")) {
                 etype.setDataType("Number");
-                break;
+            }
+            else if (etype.getName().equals("GTEx")) {
+                etype.setHasGender(Boolean.TRUE);
             }
         }
         return types;
