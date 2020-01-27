@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.collections15.map.HashedMap;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.reactome.tcrd.model.Activity;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Repository;
 public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
     private static final Logger logger = Logger.getLogger(TargetCentralResourceDAOImp.class);
     private static final String TARGET_DEV_LEVEL = "Target Development Level";
+    // Set up the maximum id query levels for avoiding exception
+    private static final int MAXIMUM_ID_QUERY = 2500; // This is based on test. May not be the actual maximum
     
     @Autowired
     private SessionFactory sessionFactory;
@@ -203,10 +206,9 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
         return rtn;
     }
     
-    @Override
-    public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
-                                                           Collection<String> tissues,
-                                                           Collection<String> etypes) {
+    private List<ProteinExpression> _queryProteinExpressions(Collection<String> uniProts,
+                                                             Collection<String> tissues,
+                                                             Collection<String> etypes) {
         Session session = sessionFactory.getCurrentSession();
         // Perform something special for GTEx
         List<ProteinExpression> gteExpressions = null;
@@ -256,6 +258,28 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
             rtn.addAll(gteExpressions);
         if (targetDevList != null)
             rtn.addAll(targetDevList);
+        return rtn;
+    }
+    
+    @Override
+    public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
+                                                           Collection<String> tissues,
+                                                           Collection<String> etypes) {
+        // In case there are too many UniProt ids, we need to split the list into multiple calls.
+        List<String> protList = new ArrayList<>(uniProts);
+        List<ProteinExpression> rtn = new ArrayList<>();
+        int start = 0;
+        while (true) {
+            int end = start + MAXIMUM_ID_QUERY;
+            if (end > protList.size())
+                end = protList.size();
+            List<String> subList = protList.subList(start, end);
+            List<ProteinExpression> subResults = _queryProteinExpressions(subList, tissues, etypes);
+            rtn.addAll(subResults);
+            start += subList.size();
+            if (start >= protList.size())
+                break;
+        }
         return rtn;
     }
     
