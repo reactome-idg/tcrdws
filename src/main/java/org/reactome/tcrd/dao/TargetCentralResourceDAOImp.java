@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.apache.commons.collections15.map.HashedMap;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.reactome.tcrd.model.Activity;
@@ -202,6 +201,18 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
             devLevel.setSym(protein.getSym());
             devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
             rtn.add(devLevel);
+        }
+        return rtn;
+    }
+    
+    @Override
+    public List<String> listTDarkProteins() {
+        Session session = sessionFactory.getCurrentSession();
+        List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a WHERE a.target.targetDevLevel = 'Tdark'",
+                                                     Protein.class).getResultList();
+        List<String> rtn = new ArrayList<>();
+        for (Protein protein : proteins) {
+            rtn.add(protein.getUniprot());
         }
         return rtn;
     }

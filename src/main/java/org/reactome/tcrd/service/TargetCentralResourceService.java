@@ -49,4 +49,6 @@ public interface TargetCentralResourceService {
     public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
                                                            Collection<String> tissues,
                                                            Collection<String> etypes);
+    
+    public List<String> listTDarkProteins();
 }

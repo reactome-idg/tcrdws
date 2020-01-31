@@ -43,4 +43,6 @@ public interface TargetCentralResourceDAO {
     public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
                                                            Collection<String> tissues,
                                                            Collection<String> etypes);
+    
+    public List<String> listTDarkProteins();
 }

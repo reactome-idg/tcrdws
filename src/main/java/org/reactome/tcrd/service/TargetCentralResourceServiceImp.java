@@ -87,4 +87,9 @@ public class TargetCentralResourceServiceImp implements TargetCentralResourceSer
                                                            Collection<String> etypes) {
         return tcrdDAO.queryProteinExpressions(uniProts, tissues, etypes);
     }
+    
+    @Override
+    public List<String> listTDarkProteins() {
+        return tcrdDAO.listTDarkProteins();
+    }
 }

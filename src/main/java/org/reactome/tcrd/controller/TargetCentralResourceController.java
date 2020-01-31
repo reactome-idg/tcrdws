@@ -74,6 +74,16 @@ public class TargetCentralResourceController {
     }
     
     /**
+     * List all proteins labeled as TDark in a list of UniProt ids.
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @GetMapping("/tdark/uniprots")
+    public List<String> listTDarkProteins() {
+        return tcrdService.listTDarkProteins();
+    }
+    
+    /**
      * List tissues for an expression type.
      * @param etype
      * @return

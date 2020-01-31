@@ -29,6 +29,14 @@ public class WSTests {
     protected final String HTTP_GET = "Get";
 
     @Test
+    public void testlistTDarkProteins() throws Exception {
+        String url = HOST_URL + "tdark/uniprots";
+        System.out.println(url);
+        String rtn = callHttp(url, HTTP_GET, null);
+        outputJSON(rtn);
+    }
+    
+    @Test
     public void testListExpressionTypes() throws Exception {
         String url = HOST_URL + "expressionTypes";
         System.out.println(url);
