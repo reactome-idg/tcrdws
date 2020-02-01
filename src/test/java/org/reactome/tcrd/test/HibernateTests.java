@@ -55,6 +55,18 @@ public class HibernateTests {
     }
     
     @Test
+    public void dumpTDarkProteins() throws Exception {
+        Session session = createSessionFactory().openSession();
+        TypedQuery<Protein> query = session.createQuery("FROM " + Protein.class.getSimpleName() + " a WHERE a.target.targetDevLevel = 'Tdark'",
+                                                        Protein.class);
+        List<Protein> darkProteins = query.getResultList();
+        System.out.println("Total dark proteins: " + darkProteins.size());
+        System.out.println("UniProt\tGeneName");
+        darkProteins.forEach(p -> System.out.println(p.getUniprot() + "\t" + p.getSym()));
+        session.close();
+    }
+    
+    @Test
     public void checkGenExpression() throws Exception {
         Session session = createSessionFactory().openSession();
         
