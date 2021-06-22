@@ -40,6 +40,8 @@ public interface TargetCentralResourceDAO {
     
     public List<ProteinTargetDevLevel> queryProteinTargetLevels(Collection<String> uniProts);
     
+    public List<ProteinTargetDevLevel> queryAllProteinTargetLevels();
+    
     public List<ProteinExpression> queryProteinExpressions(Collection<String> uniProts,
                                                            Collection<String> tissues,
                                                            Collection<String> etypes);

@@ -127,6 +127,12 @@ public class TargetCentralResourceController {
     }
     
     @Transactional(readOnly = true)
+    @GetMapping("/targetLevel/all-uniprots")
+    public List<ProteinTargetDevLevel> queryAllProteinTargetLevels(){
+    	return tcrdService.queryAllProteinTargetLevels();
+    }
+    
+    @Transactional(readOnly = true)
     @GetMapping("/chembl/uniprot/{uniprotId}")
     public List<ChEMBLActivity> queryChEMBLActivitiesForId(@PathVariable("uniprotId") String uniprotId) {
         List<ChEMBLActivity> activities = tcrdService.queryChEMBLActivitiesForId(uniprotId);

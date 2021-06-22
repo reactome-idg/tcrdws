@@ -193,16 +193,32 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
                 .getResultList();
         if (proteins == null || proteins.size() == 0)
             return new ArrayList<>();
-        List<ProteinTargetDevLevel> rtn = new ArrayList<>();
-        for (Protein protein : proteins) {
-            ProteinTargetDevLevel devLevel = new ProteinTargetDevLevel();
-            // Just use the first protein
-            devLevel.setUniprot(protein.getUniprot());
-            devLevel.setSym(protein.getSym());
-            devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
-            rtn.add(devLevel);
-        }
-        return rtn;
+        return convertToProteinTargetDevLevelList(proteins);
+    }
+    
+    @Override
+    public List<ProteinTargetDevLevel> queryAllProteinTargetLevels(){
+    	Session session = sessionFactory.getCurrentSession();
+    	List<Protein> proteins = session.createQuery("SELECT a FROM " + Protein.class.getSimpleName() + " a", Protein.class)
+                .getResultList();
+    	if(proteins == null || proteins.size() == 0) return new ArrayList<>();
+    	return convertToProteinTargetDevLevelList(proteins);
+    }
+    
+    /*
+     * Converts list of proteins to list of ProteinTargetDevLevel to lighten what is sent through rest API
+     */
+    private List<ProteinTargetDevLevel> convertToProteinTargetDevLevelList(List<Protein> proteins) {
+		List<ProteinTargetDevLevel> rtn = new ArrayList<>();
+		        for (Protein protein : proteins) {
+		            ProteinTargetDevLevel devLevel = new ProteinTargetDevLevel();
+		            // Just use the first protein
+		            devLevel.setUniprot(protein.getUniprot());
+		            devLevel.setSym(protein.getSym());
+		            devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
+		            rtn.add(devLevel);
+		        }
+		return rtn;
     }
     
     @Override
