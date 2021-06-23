@@ -210,14 +210,14 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
      */
     private List<ProteinTargetDevLevel> convertToProteinTargetDevLevelList(List<Protein> proteins) {
 		List<ProteinTargetDevLevel> rtn = new ArrayList<>();
-		        for (Protein protein : proteins) {
-		            ProteinTargetDevLevel devLevel = new ProteinTargetDevLevel();
-		            // Just use the first protein
-		            devLevel.setUniprot(protein.getUniprot());
-		            devLevel.setSym(protein.getSym());
-		            devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
-		            rtn.add(devLevel);
-		        }
+        for (Protein protein : proteins) {
+            ProteinTargetDevLevel devLevel = new ProteinTargetDevLevel();
+            // Just use the first protein
+            devLevel.setUniprot(protein.getUniprot());
+            devLevel.setSym(protein.getSym());
+            devLevel.setTargetDevLevel(protein.getTarget().getTargetDevLevel());
+            rtn.add(devLevel);
+        }
 		return rtn;
     }
     
