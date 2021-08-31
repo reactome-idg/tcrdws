@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections15.map.HashedMap;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -55,7 +55,7 @@ public class TargetCentralResourceDAOImp implements TargetCentralResourceDAO {
     }
     
     private void loadEtypeToTissues() {
-        etypeToTissues = new HashedMap<>();
+        etypeToTissues = new HashMap<>();
         // Hard-coded for a pre-generated file dumped from the TCRD database
         String fileName = "expression_type_tisses.txt"; 
         try {

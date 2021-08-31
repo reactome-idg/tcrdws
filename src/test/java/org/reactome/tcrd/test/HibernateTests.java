@@ -37,9 +37,7 @@ public class HibernateTests {
     
     public HibernateTests() {
     }
-    
-    
-    
+
     @Test
     public void checkJensenTissues() throws Exception {
         String dir = "/Users/wug/datasets/TISSUES";
@@ -62,7 +60,13 @@ public class HibernateTests {
         List<Protein> darkProteins = query.getResultList();
         System.out.println("Total dark proteins: " + darkProteins.size());
         System.out.println("UniProt\tGeneName");
-        darkProteins.forEach(p -> System.out.println(p.getUniprot() + "\t" + p.getSym()));
+//        darkProteins.forEach(p -> System.out.println(p.getUniprot() + "\t" + p.getSym()));
+        // Just want to print out ion channels
+        String fam = "IC";
+        darkProteins.stream()
+                    .filter(p -> p.getTarget().getFamily() != null && p.getTarget().getFamily().equals(fam)) // Many targets don't have families
+                    .map(p -> p.getUniprot() + "\t" + p.getSym())
+                    .forEach(System.out::println);
         session.close();
     }
     

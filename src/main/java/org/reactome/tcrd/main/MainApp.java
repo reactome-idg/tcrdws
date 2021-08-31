@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +14,12 @@ import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections15.map.HashedMap;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.junit.Test;
 import org.reactome.tcrd.config.AppConfig;
 import org.reactome.tcrd.model.ExpressionType;
-import org.reactome.tcrd.model.GTEx;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -91,7 +90,7 @@ public class MainApp {
     @Test
     public void checkExpressionTypeTissues() throws IOException {
         String fileName = "src/main/resources/expression_type_tisses.txt";
-        Map<String, Set<String>> typeToTissues = new HashedMap<>();
+        Map<String, Set<String>> typeToTissues = new HashMap<>();
         Files.lines(Paths.get(fileName))
              .map(line -> line.split("\t"))
              .forEach(tokens -> {
